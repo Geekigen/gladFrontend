@@ -24,8 +24,9 @@
               <a class="nav-link" href="#">Deparments</a>
             </li>
           </ul>
-          <button class="btn btn-secondary m-2" type="submit">Register</button><button class="btn btn-primary"
-            type="submit">Login</button><button class="btn btn-primary m-2" type="submit">feedback</button>
+          <button class="btn btn-secondary m-2" type="button" >Register</button>
+          <button class="btn btn-primary"
+            type="button">Login</button><button class="btn btn-primary m-2" type="button">feedback</button>
         </div>
       </div>
     </nav>
