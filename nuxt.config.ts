@@ -1,6 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  css: ['boxicons/css/boxicons.min.css'],  
+  runtimeConfig: {
+    public:{
+      apiUrl: process.env.NUXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000"
+    }
+  },
+  devtools: { enabled: true },
+  css: ['boxicons/css/boxicons.min.css'],
+  modules: [
+    ["@pinia/nuxt",{
+      autoImports: ['defineStore', 'acceptHMRUpdate']
+    }],
+    '@pinia-plugin-persistedstate/nuxt',
+  ],  
   app: {
     
     head: {

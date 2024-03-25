@@ -17,7 +17,7 @@
       </div>
       <a href="/forgot">Forgot password</a>
       <div class="text-end">
-        <button type="submit" class="btn btn-success" @click="login">Login</button>
+        <button type="button" class="btn btn-success" @click="handleSubmit">Login</button>
 
       </div>
       
@@ -27,44 +27,63 @@
 </template>
 
 <script>
-definePageMeta({
-  layout: false
-});
 
-export default { 
-  data(){
-    return {
-    password: "",
-    success: "",
-    error: "",
-    username: ""
-    };
+import { storeToRefs } from 'pinia'
+import { authStore } from '~/store';
 
-
-  },
-  methods: {
-    async login() {
-      try {
-
-        const response = await $fetch('http://127.0.0.1:8000/customers/create/', {
-          method: 'POST',
-          body: {
-            username: this.username,
-            password: this.password
-          }
-        });
-
-        if (response.code === '200') {
-          this.success = response.message;
+export default {
+    name: 'Login',
+    data() {
+        return {
+            error: "",
+            form: {
+                username: '',
+                password: '',
+            }
         }
-
-
-      } catch (e) {
-        this.error = "An error occurred. Please try again later.";
-
-      }
     },
+    methods: {
+        async handleSubmit() {
+            try {
+                const response = await $fetch(`${this.$config.public.apiUrl}/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    mode: "cors",
+                    credentials: "include",
+                    body: {
+                        username: this.form.username,
+                        password: this.form.password,
+                    }
+                });
 
-  }
+
+
+
+                if (response.code == "200") {
+                  console.log("logged in")
+                
+                 const store = authStore()
+
+                store.setUser(response.data.user)
+                store.setToken(response.data.token)
+                store.login()
+
+
+                return await navigateTo(`/home`)
+
+               }
+
+            } catch (error) {
+                this.error = "Connection error"
+            }
+
+        }
+    },
+    created() {
+        const store = authStore()
+        store.logout()
+    }
 }
 </script>
