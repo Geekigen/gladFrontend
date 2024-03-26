@@ -9,11 +9,11 @@
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email</label>
         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-          v-model="username">
+          v-model="form.username">
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" v-model="password">
+        <input type="password" class="form-control" id="exampleInputPassword1" v-model="form.password">
       </div>
       <a href="/forgot">Forgot password</a>
       <div class="text-end">
@@ -45,7 +45,8 @@ export default {
     methods: {
         async handleSubmit() {
             try {
-                const response = await $fetch(`${this.$config.public.apiUrl}/login/`, {
+              console.log([this.form.username,this.form.password])
+              const response = await $fetch(`${this.$config.public.apiUrl}/login/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -58,27 +59,18 @@ export default {
                     }
                 });
 
-
-
-
                 if (response.code == "200") {
                   console.log("logged in")
-                
-                 const store = authStore()
-
-                store.setUser(response.data.user)
-                store.setToken(response.data.token)
-                store.login()
-
-
-                return await navigateTo(`/home`)
-
+                  const store = authStore()
+                  store.setUser(response.user)
+                  store.setToken(response.token)
+                  store.login()
+                  return await navigateTo(`/home`)
                }
 
             } catch (error) {
                 this.error = "Connection error"
             }
-
         }
     },
     created() {

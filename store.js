@@ -3,7 +3,6 @@ export const authStore = defineStore({
     state: () => {
         return{
             user: {},
-            permissions:[],
             token:"",
             loggedIn: false
         }
@@ -15,9 +14,6 @@ export const authStore = defineStore({
         setToken(token){
             this.token = token
         },
-        setPermissions(permissions){
-            this.permissions = permissions
-        },
         login(){
             this.loggedIn = true
         },
@@ -26,6 +22,7 @@ export const authStore = defineStore({
             this.user = {}
             this.permissions = []
             this.token = ""
+            // navigateTo(`/`)
         }
     },
 
@@ -35,9 +32,6 @@ export const authStore = defineStore({
         },
         getToken:(state)=>{
             return state.token
-        },
-        getPermission:(state)=>{
-            return (name) => state.permissions.find((permission)=> permission == name)
         },
         isLoggedIn:(state)=>{
             return state.loggedIn
