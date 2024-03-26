@@ -52,14 +52,14 @@
             <div class="mb-3">
               <label for="passwordInput" class="form-label">Confirm Password</label>
               <input type="password" class="form-control form-control-icon" id="c_passwordInput" placeholder="Password"
-                v-model="c_password">
+                v-model="form.c_password">
               <i class="ri-lock-line"></i>
             </div>
 
             <div class="mb-3">
               <label for="roleInput" class="form-label">Role</label>
               <select class="form-select" id="roleInput" v-model="form.role">
-                <option selected>Choose...</option>
+                <option selected disabled>Choose...</option>
                 <option value="customer">Customer</option>
                 <option value="admin">Admin</option>
               </select>
@@ -86,7 +86,7 @@ export default {
     return {
       error: "",
       success: "",
-      c_password: "",
+      
       form: {
         id_no: '',
         username: '',
@@ -96,16 +96,14 @@ export default {
         contact_no: '',
         role: '',
         status: 'Active',
-        password: ''
+        password: '',
+        c_password: "",
       }
     };
   },
   methods: {
     async register() {
-      if (this.password !== this.c_password) {
-        this.error = "Passwords do not match. Please try again.";
-        return;
-      }
+      console.log(this.form)
       try {
         const response = await $fetch(`${this.$config.public.apiUrl}/customers/create/`, {
           method: 'POST',
@@ -130,6 +128,7 @@ export default {
         if (response.code === '201') {
           this.success = response.message;
           this.error = "";
+          this.$router.push('/login');
 
         }
         else {

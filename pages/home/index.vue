@@ -1,19 +1,13 @@
 <template>
-  <div class="container m-4">
+  <div class="m-4">
     <div class="text-end">
-      <button
-        class="btn btn-primary waves-effect waves-light"
-        data-bs-toggle="modal"
-        data-bs-target="#addApartmentModal"
-      >
-        <i class="ri-add-line align-bottom me-1 bx bx-plus fs-4"></i> Add Bill
-      </button>
       <button
         class="btn btn-primary waves-effect waves-light m-2"
         data-bs-toggle="modal"
         data-bs-target="#addMeterModal"
       >
-        <i class="ri-add-line align-bottom me-1 bx bx-plus fs-4"></i> Add Meter
+        View all
+        <i class="bx bx-right-arrow-alt"></i>
       </button>
     </div>
     <div
@@ -100,15 +94,52 @@
         </div>
       </div>
     </div>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Confirm Meter creation for Customer {{ id_no }}
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">...</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" @click="add_meter">
+              Confirm changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <table class="table table-striped">
       <thead>
         <tr>
           <th>#</th>
-          <th>Id</th>
-          <th>Last Name</th>
+          <th>Id No</th>
           <th>First Name</th>
-          <th>Email</th>
+          <th>Last Name</th>
+          <th>Address</th>
           <th>Contact No</th>
           <th>Status</th>
           <th>Role</th>
@@ -119,52 +150,143 @@
       <tbody>
         <tr v-for="(user, index) in customers" :key="user.id">
           <td>{{ index + 1 }}</td>
-          <td>{{ user.id }}</td>
-          <!-- user.id is the unique identifier -->
-          <td>{{ user.last_name }}</td>
+          <td>{{ user.id_no }}</td>
           <td>{{ user.first_name }}</td>
-          <td>{{ user.email }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.address }}</td>
           <td>{{ user.contact_no }}</td>
-          <td>{{ user.status }}</td>
-          <td>{{ user.role }}</td>
+          <td>{{ user.status__name }}</td>
+          <td>{{ user.role__name }}</td>
           <td>
-            <div class="d-flex gap-2">
-              <div class="edit">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-success view-item-btn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addAgentModal"
-                  @click="editCustomer(user)"
+            <div class="dropdown">
+              <a
+                href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
                 >
-                  Edit
-                  <!-- Changed button text -->
-                </button>
-              </div>
-              <div class="view">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-info view-item-btn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  @click="viewCustomer(user)"
-                >
-                  View
-                  <!-- Changed button text -->
-                </button>
-              </div>
-              <div class="remove">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-danger remove-item-btn"
-                  data-bs-toggle="modal"
-                  @click="deleteCustomer(user)"
-                  data-bs-target="#confirmDeleteModal"
-                >
-                  Delete
-                  <!-- Changed button text -->
-                </button>
-              </div>
+                  <path
+                    fill="black"
+                    d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2"
+                  />
+                </svg>
+              </a>
+
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li>
+                  <button class="dropdown-item">
+                    View
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#4b86fb"
+                        d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"
+                      />
+                    </svg>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item">
+                    Edit
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#84f575"
+                        d="M16.84 2.73c-.39 0-.77.15-1.07.44l-2.12 2.12l5.3 5.31l2.12-2.1c.6-.61.6-1.56 0-2.14L17.9 3.17c-.3-.29-.68-.44-1.06-.44M12.94 6l-8.1 8.11l2.56.28l.18 2.29l2.28.17l.29 2.56l8.1-8.11m-14 3.74L2.5 21.73l6.7-1.79l-.24-2.16l-2.31-.17l-.18-2.32"
+                      />
+                    </svg>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item">
+                    Delete
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#f10909"
+                        d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"
+                      />
+                    </svg>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    class="dropdown-item"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    @click="view_customer(user)"
+                  >
+                    Add Meter
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#4b86fb"
+                        d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
+                      />
+                    </svg>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    class="dropdown-item"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addMeterModal"
+                    @click="view_customer(user)"
+                  >
+                    Add Bill
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#4b86fb"
+                        d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
+                      />
+                    </svg>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item">
+                    Read Meter
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#4b86fb"
+                        d="M21.59 11.59L23 13l-9.5 9.5l-5.08-5.09L9.83 16l3.67 3.68zM4 16V3h5a4 4 0 0 1 4 4c0 1.54-.87 2.88-2.15 3.55L14 16h-2l-2.89-5H6v5zm2-7h3a2 2 0 0 0 2-2a2 2 0 0 0-2-2H6z"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
             </div>
           </td>
         </tr>
@@ -174,9 +296,13 @@
 </template>
 
 <script>
+import { authStore } from "~/store";
 export default {
   data() {
     return {
+      isLoggedIn: authStore().isLoggedIn,
+      role: authStore().getUser.role,
+      token: authStore().getToken,
       customers: [],
       success: null,
       error: null,
@@ -185,7 +311,6 @@ export default {
       previous_reading: null,
       due_date: null,
       payment_method: null,
-      id_no: null,
       meter_no: null,
       bill: null,
       meter: null,
@@ -203,18 +328,20 @@ export default {
   methods: {
     async get_customers() {
       try {
-        const response = await fetch(
+        const response = await $fetch(
           "http://127.0.0.1:8000/customers/get_all/",
           {
-            method: "GET",
+            method: "POST",
+
             headers: {
               "Content-Type": "application/json",
             },
+            body: {
+              token: this.token,
+            },
           }
         );
-
         if (response.code == "200") {
-          this.success = responseData.message;
           this.customers = response.data;
         }
       } catch (error) {
@@ -223,12 +350,10 @@ export default {
     },
     async create_bill() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/bill/create/", {
+        const response = await $fetch("http://127.0.0.1:8000/bill/create/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*",
           },
           body: JSON.stringify({
             id_no: this.id_no,
@@ -236,8 +361,10 @@ export default {
             previous_reading: this.previous_reading,
             due_date: this.due_date,
             payment_method: this.payment_method,
+            token: this.token,
           }),
         });
+        console.log(response);
         if (response.code == "201") {
           this.success = response.message;
         }
@@ -247,13 +374,14 @@ export default {
     },
     async add_meter() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/meter/create/", {
+        const response = await $fetch("http://127.0.0.1:8000/meter/create/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             id_no: this.id_no,
+            token: this.token,
           }),
         });
         if (response.code == "201") {
@@ -265,7 +393,7 @@ export default {
     },
     async read_meter() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/meter/read/", {
+        const response = await $fetch("http://127.0.0.1:8000/meter/read/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -309,6 +437,7 @@ export default {
       this.email = i.email;
       this.phone_number = i.phone_number;
       this.id = i.id;
+      this.id_no = i.id_no;
       this.to_update = true;
     },
   },

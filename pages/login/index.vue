@@ -1,6 +1,6 @@
 <template>
   <div class=" w-100 bg-info d-flex align-items-center justify-content-center m-4 min-vh-100">
-    <form @click.prevent="login">
+    <form>
       <h1 class="text-center">Login</h1>
       <div v-if="error" class="alert alert-danger mt-3" role="alert">
         {{ error }}
@@ -45,7 +45,6 @@ export default {
     methods: {
         async handleSubmit() {
             try {
-              console.log([this.form.username,this.form.password])
               const response = await $fetch(`${this.$config.public.apiUrl}/login/`, {
                     method: 'POST',
                     headers: {
@@ -58,6 +57,8 @@ export default {
                         password: this.form.password,
                     }
                 });
+
+                console.log(response)
 
                 if (response.code == "200") {
                   console.log("logged in")
