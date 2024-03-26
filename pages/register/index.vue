@@ -9,13 +9,13 @@
       <div v-if="error" class="alert alert-danger mt-3" role="alert">
         {{ error }}
       </div>
-      <form @click.prevent="register">
+      <form>
         <h1 class="text-center">Register</h1>
         <div class="row">
           <div class="col-6">
             <div class="mb-3">
               <label for="firstNameInput" class="form-label">User Name</label>
-              <input type="text" class="form-control" id="firstNameInput" v-model="form.username">
+              <input type="text" class="form-control" id="UserName" v-model="form.username">
             </div>
             <div class="mb-3">
               <label for="firstNameInput" class="form-label">First Name</label>
@@ -61,11 +61,11 @@
               <select class="form-select" id="roleInput" v-model="form.role">
                 <option selected disabled>Choose...</option>
                 <option value="customer">Customer</option>
-                <option value="admin">Admin</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
             <div class="mb-3 text-end">
-              <button type="button m-4 " class="btn btn-primary" @click="register">Register</button>
+              <button type="button m-4 " class="btn btn-primary" @click.prevent="register">Register</button>
             </div>
             <p class="text-center">Already have an account? <a href="/login">Login</a></p>
 
@@ -103,7 +103,21 @@ export default {
   },
   methods: {
     async register() {
-      console.log(this.form)
+      console.log(
+        [
+          this.form.id_no,
+          this.form.username,
+          this.form.password,
+          this.form.contact_no,
+          this.form.first_name,
+          this.form.last_name,
+          this.form.address,
+          this.form.role
+        ])
+      if(this.form.password !== this.c_password) {
+        this.error = "Passwords do not match. Please try again.";
+        return;
+      }
       try {
         const response = await $fetch(`${this.$config.public.apiUrl}/customers/create/`, {
           method: 'POST',
@@ -114,8 +128,8 @@ export default {
           credentials: "include",
           body: {
             id_no: this.form.id_no,
-            email: this.form.email,
-            username: this.form.email,
+            status: "Active",
+            username: this.form.username,
             password: this.form.password,
             contact_no: this.form.contact_no,
             first_name: this.form.first_name,
@@ -128,7 +142,7 @@ export default {
         if (response.code === '201') {
           this.success = response.message;
           this.error = "";
-          this.$router.push('/login');
+          return await navigateTo(`/login`)
 
         }
         else {
