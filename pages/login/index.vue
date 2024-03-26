@@ -9,15 +9,15 @@
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email</label>
         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-          v-model="username">
+          v-model="form.username">
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" v-model="password">
+        <input type="password" class="form-control" id="exampleInputPassword1" v-model="form.password">
       </div>
       <a href="/forgot">Forgot password</a>
       <div class="text-end">
-        <button type="submit" class="btn btn-success" @click="login">Login</button>
+        <button type="button" class="btn btn-success" @click="handleSubmit">Login</button>
 
       </div>
       
@@ -27,44 +27,55 @@
 </template>
 
 <script>
-definePageMeta({
-  layout: false
-});
 
-export default { 
-  data(){
-    return {
-    password: "",
-    success: "",
-    error: "",
-    username: ""
-    };
+import { storeToRefs } from 'pinia'
+import { authStore } from '~/store';
 
-
-  },
-  methods: {
-    async login() {
-      try {
-
-        const response = await $fetch('http://127.0.0.1:8000/customers/create/', {
-          method: 'POST',
-          body: {
-            username: this.username,
-            password: this.password
-          }
-        });
-
-        if (response.code === '200') {
-          this.success = response.message;
+export default {
+    name: 'Login',
+    data() {
+        return {
+            error: "",
+            form: {
+                username: '',
+                password: '',
+            }
         }
-
-
-      } catch (e) {
-        this.error = "An error occurred. Please try again later.";
-
-      }
     },
+    methods: {
+        async handleSubmit() {
+            try {
+              console.log([this.form.username,this.form.password])
+              const response = await $fetch(`${this.$config.public.apiUrl}/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    mode: "cors",
+                    credentials: "include",
+                    body: {
+                        username: this.form.username,
+                        password: this.form.password,
+                    }
+                });
 
-  }
+                if (response.code == "200") {
+                  console.log("logged in")
+                  const store = authStore()
+                  store.setUser(response.user)
+                  store.setToken(response.token)
+                  store.login()
+                  return await navigateTo(`/home`)
+               }
+
+            } catch (error) {
+                this.error = "Connection error"
+            }
+        }
+    },
+    created() {
+        const store = authStore()
+        store.logout()
+    }
 }
 </script>
