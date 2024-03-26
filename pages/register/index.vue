@@ -141,6 +141,7 @@ export default {
         if (response.code === '201') {
           this.success = response.message;
           this.error = "";
+          return await navigateTo(`/login`)
 
         }
         else {
