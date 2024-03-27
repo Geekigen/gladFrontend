@@ -1,15 +1,5 @@
 <template>
   <div class="m-4">
-    <div class="text-end">
-      <button
-        class="btn btn-primary waves-effect waves-light m-2"
-        data-bs-toggle="modal"
-        data-bs-target="#addMeterModal"
-      >
-        View all
-        <i class="bx bx-right-arrow-alt"></i>
-      </button>
-    </div>
     <div
       class="modal fade"
       id="addMeterModal"
@@ -94,6 +84,98 @@
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      id="editModal"
+      tabindex="-1"
+      aria-labelledby="editModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModal">Edit Customer</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+        <div class="row">
+          <div class="col-6">
+            <div class="mb-3">
+              <label for="firstNameInput" class="form-label">Username</label>
+              <input type="text" class="form-control" id="firstNameInput" v-model="username">
+            </div>
+            
+            <div class="mb-3">
+              <label for="firstNameInput" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstNameInput" v-model="first_name">
+            </div>
+            <div class="mb-3">
+              <label for="lastNameInput" class="form-label ">Last Name</label>
+              <input type="text" class="form-control" id="lastNameInput" v-model="last_name">
+            </div>
+
+            <div class="mb-3">
+              <label for="idNoInput" class="form-label">ID Number</label>
+              <input type="text" class="form-control" id="idNoInput" v-model="id_no">
+            </div>
+            
+
+          </div>
+          <div class="col-6">
+            <div class="mb-3">
+              <label for="contactNoInput" class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="contactNoInput" v-model="phone_number">
+            </div>
+            <div class="mb-3">
+              <label for="addressInput" class="form-label ">Address</label>
+              <input type="text" class="form-control" id="addressInput" v-model="address">
+            </div>
+
+            <div class="mb-3">
+              <label for="roleInput" class="form-label">Role</label>
+              <select class="form-select" id="roleInput" v-model="c_role">
+                <option selected disabled>Choose...</option>
+                <option value="customer">Customer</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="roleInput" class="form-label">Status</label>
+              <select class="form-select" id="roleInput" v-model="status">
+                <option selected disabled>Choose...</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-success" @click="edit_customer">
+              update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Modal -->
     <div
       class="modal fade"
@@ -131,7 +213,44 @@
         </div>
       </div>
     </div>
-
+    <!-- delete modal start -->
+    <div
+      class="modal fade"
+      id="customerDeleteModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Confirm you want to delete customer {{ id_no }}?
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-danger" @click="delete_customer">
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- delete modal end -->
+<!-- modals -->
     <table class="table table-striped">
       <thead>
         <tr>
@@ -197,7 +316,12 @@
                   </button>
                 </li>
                 <li>
-                  <button class="dropdown-item">
+                  <button class="dropdown-item" 
+                  
+                  data-bs-toggle="modal"
+                  data-bs-target="#editModal"
+                  @click="view_customer(user)"
+                  >
                     Edit
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -213,7 +337,14 @@
                   </button>
                 </li>
                 <li>
-                  <button class="dropdown-item">
+                  <button 
+                  class="dropdown-item"
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerDeleteModal"
+                  @click="view_customer(user)"
+                  
+                  >
+                  
                     Delete
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -305,6 +436,7 @@ export default {
       token: authStore().getToken,
       customers: [],
       success: null,
+      address:null,
       error: null,
       id_no: null,
       current_reading: null,
@@ -318,7 +450,10 @@ export default {
       last_name: null,
       email: null,
       phone_number: null,
+      username:null,
+      status:null,
       id: null,
+      c_role:null,
       to_update: false,
       customer_meter: null,
       customer_bill: null,
@@ -367,6 +502,7 @@ export default {
         console.log(response);
         if (response.code == "201") {
           this.success = response.message;
+          this.$router.go()
         }
       } catch (error) {
         this.error = "An error occurred. Please try again later.";
@@ -386,6 +522,56 @@ export default {
         });
         if (response.code == "201") {
           this.success = response.message;
+          this.$router.go()
+        }
+      } catch (error) {
+        this.error = "An error occurred. Please try again later.";
+      }
+    },
+    //  
+    async delete_customer() {
+      try {
+        const response = await $fetch("http://127.0.0.1:8000/customers/delete/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_no: this.id_no,
+            token: this.token,
+          }),
+        });
+        if (response.code == "200") {
+          this.success = response.message;
+          this.$router.go()
+        }
+      } catch (error) {
+        this.error = "An error occurred. Please try again later.";
+      }
+    },
+    async edit_customer() {
+      try {
+        const response = await $fetch("http://127.0.0.1:8000/customers/update/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_no: this.id_no,
+            status: this.status,
+            contact_no: this.phone_number,
+            first_name: this.first_name,
+            last_name: this.last_name,
+            address: this.address,
+            role: this.role,
+
+            token: this.token,
+          }),
+        });
+        console.log(response)
+        if (response.code == "200") {
+          this.success = response.message;
+          this.$router.go()
         }
       } catch (error) {
         this.error = "An error occurred. Please try again later.";
@@ -405,6 +591,7 @@ export default {
         if (response.code == "200") {
           this.success = response.message;
           this.meter = response.data;
+          this.$router.go()
         }
       } catch (error) {
         this.error = "An error occurred. Please try again later.";
@@ -435,10 +622,14 @@ export default {
       this.first_name = i.first_name;
       this.last_name = i.last_name;
       this.email = i.email;
-      this.phone_number = i.phone_number;
+      this.status=i.status__name;
+      this.username=i.username;
+      this.phone_number = i.contact_no;
       this.id = i.id;
+      this.address=i.address;
       this.id_no = i.id_no;
       this.to_update = true;
+      this.c_role=i.role__name
     },
   },
   created() {
