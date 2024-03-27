@@ -114,10 +114,6 @@ export default {
           this.form.address,
           this.form.role
         ])
-      if(this.form.password !== this.c_password) {
-        this.error = "Passwords do not match. Please try again.";
-        return;
-      }
       try {
         const response = await $fetch(`${this.$config.public.apiUrl}/customers/create/`, {
           method: 'POST',

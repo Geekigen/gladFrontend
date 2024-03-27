@@ -1,5 +1,15 @@
 <template>
-  <div class="m-4">
+  <div v-if="role == 'Admin'" class="m-4">
+    <div class="text-end">
+      <button
+        class="btn btn-primary waves-effect waves-light m-2"
+        data-bs-toggle="modal"
+        data-bs-target="#addMeterModal"
+      >
+        View all
+        <i class="bx bx-right-arrow-alt"></i>
+      </button>
+    </div>
     <div
       class="modal fade"
       id="addMeterModal"
@@ -84,6 +94,101 @@
         </div>
       </div>
     </div>
+    <!--Receipt MOdal-->
+    <div
+      class="modal fade"
+      id="generateModal"
+      tabindex="-1"
+      aria-labelledby="generateModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5
+                                            class="modal-title"
+                                            id="exampleModalLabel"
+                                          >
+                                          Receipt Details
+                                          </h5>
+                                          <button
+                                            type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close"
+                                          ></button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <table class="table">
+                                            <tbody>
+                                              <tr>
+                                                <td>Customer: </td>
+                                                <td>
+                                                  {{ bill_data.first_name?? "" }} {{ bill_data.last_name?? "" }}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Address:</td>
+                                                <td>
+                                                  {{bill_data.address?? ""}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Contact No:</td>
+                                                <td>
+                                                  {{bill_data.contact_no?? ""}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Payment Date:</td>
+                                                <td>
+                                                   {{bill_data.payment_date?? ""}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Meter:</td>
+                                                <td>
+                                                  {{bill_data.meter?? ""}}
+                                                </td>
+                                              </tr>
+                                             
+                                              <tr>
+                                                <td>Payment Method:</td>
+                                                <td>
+                                                  {{bill_data.payment_method_used?? ""}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Amount Paid:</td>
+                                                <td>
+                                                  {{bill_data.amount_paid?? ""}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Status:</td>
+                                                <td>
+                                                  {{bill_data.status?? ""}}
+                                                </td>
+                                              </tr>
+                                              
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button
+                                            type="button"
+                                            class="btn btn-secondary"
+                                            data-bs-dismiss="modal"
+                                          >
+                                            Close
+                                          </button>
+                                        </div>
+                                      </div>
+        </div>
+      </div>
+    </div>
+  
     <div
       class="modal fade"
       id="editModal"
@@ -177,6 +282,7 @@
       </div>
     </div>
     <!-- Modal -->
+   
     <div
       class="modal fade"
       id="exampleModal"
@@ -188,7 +294,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Confirm Meter creation for Customer {{ id_no }}
+              Confirm Meter creation for Customer
             </h1>
             <button
               type="button"
@@ -208,6 +314,78 @@
             </button>
             <button type="button" class="btn btn-primary" @click="add_meter">
               Confirm changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="receiptModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="receiptModal">
+              Confirm 
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="#6fe286" d="M437.3 30L202.7 339.3L64 200.7l-64 64L213.3 478L512 94z"/></svg></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-success" @click="generate_receipt">
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="readModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="readModal">
+              Confirm 
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="#6fe286" d="M437.3 30L202.7 339.3L64 200.7l-64 64L213.3 478L512 94z"/></svg></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-success" @click="read_receipt">
+              Confirm
             </button>
           </div>
         </div>
@@ -417,12 +595,64 @@
                     </svg>
                   </button>
                 </li>
+                <li>
+                  <button class="dropdown-item" data-bs-toggle="modal"
+                    data-bs-target="#generateModal"
+                    @click="view_customer(user)">
+                    
+                    Generate Receipt
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#4b86fb"
+                        d="M21.59 11.59L23 13l-9.5 9.5l-5.08-5.09L9.83 16l3.67 3.68zM4 16V3h5a4 4 0 0 1 4 4c0 1.54-.87 2.88-2.15 3.55L14 16h-2l-2.89-5H6v5zm2-7h3a2 2 0 0 0 2-2a2 2 0 0 0-2-2H6z"
+                      />
+                    </svg>
+                  </button>
+
+                </li>
+                <li>
+                  <button class="dropdown-item" data-bs-toggle="modal"
+                    data-bs-target="#readModal"
+                    @click="view_customer(user)">
+                    Read Receipt
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#4b86fb"
+                        d="M21.59 11.59L23 13l-9.5 9.5l-5.08-5.09L9.83 16l3.67 3.68zM4 16V3h5a4 4 0 0 1 4 4c0 1.54-.87 2.88-2.15 3.55L14 16h-2l-2.89-5H6v5zm2-7h3a2 2 0 0 0 2-2a2 2 0 0 0-2-2H6z"
+                      />
+                    </svg>
+                  </button>
+                </li>
               </ul>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
+    
+  </div>
+  <div v-else>
+    <div class="text-end">
+      <button
+        class="btn btn-primary waves-effect waves-light m-2"
+        data-bs-toggle="modal"
+        data-bs-target="#editProfileModal"
+      >
+        Edit Profile
+        <i class="bx bx-pen"></i>
+      </button>
+    </div>
+    <h1 class="text-center">Welcome  {{ role }}</h1>
   </div>
 </template>
 
@@ -457,6 +687,18 @@ export default {
       to_update: false,
       customer_meter: null,
       customer_bill: null,
+      bill_data: {
+        first_name: "",
+        last_name: "",
+        address: "",
+        contact_no: "",
+        payment_date: "",
+        meter: "",
+        payment_method_used: "",
+        amount_paid: "",
+        status: "",
+
+      },
     };
   },
 
@@ -464,7 +706,7 @@ export default {
     async get_customers() {
       try {
         const response = await $fetch(
-          "http://127.0.0.1:8000/customers/get_all/",
+          `${this.$config.public.apiUrl}/customers/get_all/`,
           {
             method: "POST",
 
@@ -485,7 +727,7 @@ export default {
     },
     async create_bill() {
       try {
-        const response = await $fetch("http://127.0.0.1:8000/bill/create/", {
+        const response = await $fetch(`${this.$config.public.apiUrl}/bill/create/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -506,11 +748,12 @@ export default {
         }
       } catch (error) {
         this.error = "An error occurred. Please try again later.";
+        return await navigateTo(`/home`);
       }
     },
     async add_meter() {
       try {
-        const response = await $fetch("http://127.0.0.1:8000/meter/create/", {
+        const response = await $fetch(`${this.$config.public.apiUrl}/meter/create/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -575,11 +818,12 @@ export default {
         }
       } catch (error) {
         this.error = "An error occurred. Please try again later.";
+        return await navigateTo(`/home`);
       }
     },
     async read_meter() {
       try {
-        const response = await $fetch("http://127.0.0.1:8000/meter/read/", {
+        const response = await $fetch(`${this.$config.public.apiUrl}/meter/read/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -600,18 +844,70 @@ export default {
 
     async read_bill() {
       try {
-        const response = await fetch("", {
+        const response = await $fetch(`${this.$config.public.apiUrl}/bill/read/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             meter_no: this.meter_no,
+            token: this.token,
           }),
         });
         if (response.code == "200") {
           this.success = response.message;
           this.bill = response.data;
+        }
+      } catch (error) {
+        this.error = "An error occurred. Please try again later.";
+      }
+    },
+    async generate_receipt() {
+      try {
+        const response = await $fetch(`${this.$config.public.apiUrl}/receipt/create/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: this.token,
+            id_no: this.id_no,
+          }),
+        });
+        console.log(response.data);
+        if (response.code == "200") {
+          this.success = response.message;
+          this.bill_data.first_name = response.data.first_name;
+          this.bill_data.last_name = response.data.last_name;
+          this.bill_data.address = response.data.address;
+          this.bill_data.contact_no = response.data.contact_no;
+          this.bill_data.payment_date = response.data.payment_date;
+          this.bill_data.meter = response.data.meter;
+          this.bill_data.payment_method_used = response.data.payment_method_used;
+          this.bill_data.amount_paid = response.data.amount_paid;
+          this.bill_data.status = response.data.status;
+
+        }
+      } catch (error) {
+        this.error = "An error occurred. Please try again later.";
+      }
+    },
+    async read_receipt() {
+      try {
+        const response = await $fetch(`${this.$config.public.apiUrl}/receipt/read/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: this.token,
+            id_no: this.id_no,
+          }),
+        });
+        console.log(response);
+        if (response.code == "200") {
+          this.success = response.message;
+          this.bill_data = response.data?? "";
         }
       } catch (error) {
         this.error = "An error occurred. Please try again later.";
